@@ -14,7 +14,17 @@ class VTFImageFile(ImageFile.ImageFile):
 	format_description = "Valve Texture Format"
 	
 	def _open(self):
-		raise NotImplementedError("Reading VTF files is currently unsupported.")
+		self.fc = self.fp.read()
+		self._decoder = pyvtflib.VTFLib()
+		self._decoder.load_image_bytes(self.fc)
+		
+		self._size = self._decoder.image_width(), self._decoder.image_height()
+		self.mode = self.rawmode = "RGBA"
+		
+		self.fp = BytesIO(self._decoder.image_as_rgba8888())
+		self.tile = [
+			("raw", (0, 0) + self._size, 0, self.mode)
+		]
 
 def _save(im, fp, filename, save_all = False):
 	if im.mode not in {"RGBA"}:
@@ -46,5 +56,6 @@ def _save(im, fp, filename, save_all = False):
 	
 	vtf.destroy_image()
 
+Image.register_open(VTFImageFile.format, VTFImageFile, _accept)
 Image.register_save(VTFImageFile.format, _save)
 Image.register_extension(VTFImageFile.format, ".vtf")
