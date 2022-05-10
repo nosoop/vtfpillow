@@ -13,6 +13,49 @@ def _is_value_power_of_two(x):
 
 # flags are copied from pyvtflib in case we change out the dependency in the future
 # we also take this opportunity to rename them so the enum names aren't redundant
+_texfmt = pyvtflib.VTFImageFormat
+class VTFTextureFormat(enum.IntEnum):
+	RGBA8888 = _texfmt.IMAGE_FORMAT_RGBA8888
+	ABGR8888 = _texfmt.IMAGE_FORMAT_ABGR8888
+	RGB888 = _texfmt.IMAGE_FORMAT_RGB888
+	BGR888 = _texfmt.IMAGE_FORMAT_BGR888
+	RGB565 = _texfmt.IMAGE_FORMAT_RGB565
+	I8 = _texfmt.IMAGE_FORMAT_I8
+	IA88 = _texfmt.IMAGE_FORMAT_IA88
+	P8 = _texfmt.IMAGE_FORMAT_P8
+	A8 = _texfmt.IMAGE_FORMAT_A8
+	RGB888_BLUESCREEN = _texfmt.IMAGE_FORMAT_RGB888_BLUESCREEN
+	BGR888_BLUESCREEN = _texfmt.IMAGE_FORMAT_BGR888_BLUESCREEN
+	ARGB8888 = _texfmt.IMAGE_FORMAT_ARGB8888
+	BGRA8888 = _texfmt.IMAGE_FORMAT_BGRA8888
+	DXT1 = _texfmt.IMAGE_FORMAT_DXT1
+	DXT3 = _texfmt.IMAGE_FORMAT_DXT3
+	DXT5 = _texfmt.IMAGE_FORMAT_DXT5
+	BGRX8888 = _texfmt.IMAGE_FORMAT_BGRX8888
+	BGR565 = _texfmt.IMAGE_FORMAT_BGR565
+	BGRX5551 = _texfmt.IMAGE_FORMAT_BGRX5551
+	BGRA4444 = _texfmt.IMAGE_FORMAT_BGRA4444
+	DXT1_ONEBITALPHA = _texfmt.IMAGE_FORMAT_DXT1_ONEBITALPHA
+	BGRA5551 = _texfmt.IMAGE_FORMAT_BGRA5551
+	UV88 = _texfmt.IMAGE_FORMAT_UV88
+	UVWQ8888 = _texfmt.IMAGE_FORMAT_UVWQ8888
+	RGBA16161616F = _texfmt.IMAGE_FORMAT_RGBA16161616F
+	RGBA16161616 = _texfmt.IMAGE_FORMAT_RGBA16161616
+	UVLX8888 = _texfmt.IMAGE_FORMAT_UVLX8888
+	R32F = _texfmt.IMAGE_FORMAT_R32F
+	RGB323232F = _texfmt.IMAGE_FORMAT_RGB323232F
+	RGBA32323232F = _texfmt.IMAGE_FORMAT_RGBA32323232F
+	NV_DST16 = _texfmt.IMAGE_FORMAT_NV_DST16
+	NV_DST24 = _texfmt.IMAGE_FORMAT_NV_DST24
+	NV_INTZ = _texfmt.IMAGE_FORMAT_NV_INTZ
+	NV_RAWZ = _texfmt.IMAGE_FORMAT_NV_RAWZ
+	ATI_DST16 = _texfmt.IMAGE_FORMAT_ATI_DST16
+	ATI_DST24 = _texfmt.IMAGE_FORMAT_ATI_DST24
+	NV_NULL = _texfmt.IMAGE_FORMAT_NV_NULL
+	ATI2N = _texfmt.IMAGE_FORMAT_ATI2N
+	ATI1N = _texfmt.IMAGE_FORMAT_ATI1N
+	NONE = _texfmt.IMAGE_FORMAT_NONE
+
 _texflag = pyvtflib.VTFImageFlag
 class VTFTextureFlag(enum.IntFlag):
 	POINT_SAMPLE = _texflag.TEXTUREFLAGS_POINTSAMPLE
@@ -83,13 +126,13 @@ def _save(im, fp, filename, save_all = False):
 	
 	create_thumbnail = info.get('thumbnail', True)
 	create_mipmaps = info.get('mipmaps', True)
+	texture_format = info.get('texture_format', VTFTextureFormat.DXT5)
 	texture_flags = info.get('texture_flags', 0)
 	
 	vtf = pyvtflib.VTFLib()
 	vtf.create_image(
 		im.width, im.height,
-		img_format = pyvtflib.VTFImageFormat.IMAGE_FORMAT_DXT5,
-		thumbnail = create_thumbnail, mipmaps = create_mipmaps
+		img_format = texture_format, thumbnail = create_thumbnail, mipmaps = create_mipmaps
 	)
 	vtf.image_set_flags(texture_flags)
 	
